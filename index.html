@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>氣泡排序法 - 原理與範例</title>
+    <title>氣泡排序法 - 原理與應用</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
             margin: 20px;
+        }
+        h1, h2 {
+            color: #333;
         }
         pre {
             background-color: #f4f4f4;
@@ -16,9 +19,6 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             overflow-x: auto;
-        }
-        h1, h2 {
-            color: #333;
         }
         button {
             padding: 10px 20px;
@@ -33,9 +33,6 @@
         }
         .output {
             margin-top: 20px;
-        }
-        .description {
-            margin-bottom: 20px;
         }
     </style>
     <script>
@@ -66,12 +63,17 @@
 </head>
 <body>
     <h1>氣泡排序法</h1>
-    <div class="description">
-        <h2>原理</h2>
-        <p>氣泡排序法是一種簡單的排序演算法。它會反覆地遍歷要排序的資料列，依次比較相鄰的兩個元素，若順序錯誤則交換它們的位置。這個過程會重複進行，直到沒有需要交換的元素為止。</p>
-        <p>氣泡排序的名稱來源於較大的元素會逐漸「浮」到資料列的頂端，就像氣泡上升到水面一樣。</p>
-    </div>
-    <h2>程式碼</h2>
+    <h2>原理</h2>
+    <p>氣泡排序法是一種簡單的排序演算法。它會反覆地遍歷要排序的資料列，依次比較相鄰的兩個元素，若順序錯誤則交換它們的位置。這個過程會重複進行，直到沒有需要交換的元素為止。</p>
+    <p>氣泡排序的名稱來源於較大的元素會逐漸「浮」到資料列的頂端，就像氣泡上升到水面一樣。</p>
+    <h2>應用</h2>
+    <p>氣泡排序法適用於小型資料集的排序，因為它的時間複雜度為 O(n²)，對於大型資料集效率較低。它的主要應用包括：</p>
+    <ul>
+        <li>學習排序演算法的基礎概念</li>
+        <li>需要簡單實現的情境</li>
+        <li>小型資料集的排序</li>
+    </ul>
+    <h2>範例程式碼</h2>
     <pre>
 &lt;script&gt;
     // 氣泡排序函式
