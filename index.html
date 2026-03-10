@@ -3,7 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>氣泡排序</title>
+    <title>氣泡排序法 - 原理與範例</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .output {
+            margin-top: 20px;
+        }
+    </style>
     <script>
         // 氣泡排序函式
         function bubbleSort(arr) {
@@ -31,9 +62,34 @@
     </script>
 </head>
 <body>
-    <h1>氣泡排序範例</h1>
+    <h1>氣泡排序法</h1>
+    <h2>原理</h2>
+    <p>氣泡排序法是一種簡單的排序演算法。它會反覆地遍歷要排序的資料列，依次比較相鄰的兩個元素，若順序錯誤則交換它們的位置。這個過程會重複進行，直到沒有需要交換的元素為止。</p>
+    <p>氣泡排序的名稱來源於較大的元素會逐漸「浮」到資料列的頂端，就像氣泡上升到水面一樣。</p>
+    <h2>程式碼</h2>
+    <pre>
+&lt;script&gt;
+    // 氣泡排序函式
+    function bubbleSort(arr) {
+        let n = arr.length;
+        for (let i = 0; i &lt; n - 1; i++) {
+            for (let j = 0; j &lt; n - i - 1; j++) {
+                if (arr[j] &gt; arr[j + 1]) {
+                    // 交換元素
+                    let temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                }
+            }
+        }
+        return arr;
+    }
+&lt;/script&gt;
+    </pre>
+    <h2>執行範例</h2>
     <p id="original">原始資料: </p>
     <p id="sorted">排序後資料: </p>
     <button onclick="sortAndDisplay()">執行排序</button>
+    <div class="output"></div>
 </body>
 </html>
