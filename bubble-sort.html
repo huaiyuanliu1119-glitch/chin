@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>氣泡排序法範例</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1, h2 {
+            color: #0056b3;
+        }
+        p {
+            margin: 10px 0;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .output {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        input, select {
+            padding: 10px;
+            width: 300px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .description {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9f7ff;
+            border: 1px solid #b3d7ff;
+            border-radius: 5px;
+        }
+        .steps {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .steps p {
+            font-family: monospace;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>氣泡排序法</h1>
+    <p>氣泡排序法是一種簡單的排序演算法，透過反覆比較相鄰的元素並交換它們的位置，將較大的元素逐步「冒泡」到陣列的末端。</p>
+    
+    <div class="description">
+        <h2>氣泡排序法的原理</h2>
+        <p>氣泡排序法的運作方式如下：</p>
+        <ol>
+            <li>從陣列的第一個元素開始，依次比較相鄰的兩個元素。</li>
+            <li>如果前一個元素比後一個元素大（或小，取決於排序方式），則交換它們的位置。</li>
+            <li>重複上述步驟，直到本輪比較結束，最大的元素會移動到陣列的末端。</li>
+            <li>對剩下的元素重複相同的操作，直到所有元素都排序完成。</li>
+        </ol>
+        <p>氣泡排序法的時間複雜度為 <strong>O(n²)</strong>，適合用於小型資料集的排序。</p>
+    </div>
+
+    <h2>試試看！</h2>
+    <p>請輸入一組以逗號分隔的數字，選擇排序方式，然後按下排序按鈕來查看結果。</p>
+    <input type="text" id="arrayInput" placeholder="例如：5,3,8,6,2">
+    <select id="sortOrder">
+        <option value="asc">遞增排序</option>
+        <option value="desc">遞減排序</option>
+    </select>
+    <button onclick="sortArray()">排序</button>
+    <div class="output">
+        <h2>排序結果：</h2>
+        <p id="result"></p>
+    </div>
+    <div class="steps">
+        <h2>排序過程：</h2>
+        <div id="steps"></div>
+    </div>
+
+    <script>
+        // 氣泡排序函式
+        function bubbleSort(arr, order) {
+            let n = arr.length;
+            let steps = [];
+            for (let i = 0; i < n - 1; i++) {
+                for (let j = 0; j < n - i - 1; j++) {
+                    if ((order === 'asc' && arr[j] > arr[j + 1]) || (order === 'desc' && arr[j] < arr[j + 1])) {
+                        // 交換元素
+                        let temp = arr[j];
+                        arr[j] = arr[j + 1];
+                        arr[j + 1] = temp;
+                    }
+                }
+                // 儲存每輪排序後的陣列狀態
+                steps.push(`第 ${i + 1} 輪: ${arr.join(', ')}`);
+            }
+            return { sortedArray: arr, steps };
+        }
+
+        // 排序按鈕的功能
+        function sortArray() {
+            const input = document.getElementById('arrayInput').value;
+            const order = document.getElementById('sortOrder').value;
+            const array = input.split(',').map(Number); // 將輸入轉換為數字陣列
+            const { sortedArray, steps } = bubbleSort(array, order); // 執行氣泡排序
+            document.getElementById('result').textContent = sortedArray.join(', '); // 顯示結果
+
+            // 顯示排序過程
+            const stepsContainer = document.getElementById('steps');
+            stepsContainer.innerHTML = ''; // 清空舊內容
+            steps.forEach(step => {
+                const p = document.createElement('p');
+                p.textContent = step;
+                stepsContainer.appendChild(p);
+            });
+        }
+    </script>
+</body>
+</html>

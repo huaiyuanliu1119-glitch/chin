@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>選擇排序法範例</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .output {
+            margin-top: 20px;
+        }
+        input {
+            padding: 10px;
+            width: 300px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>選擇排序法</h1>
+    <p>請輸入一組以逗號分隔的數字，然後按下排序按鈕來查看結果。</p>
+    <input type="text" id="arrayInput" placeholder="例如：5,3,8,6,2">
+    <button onclick="sortArray()">排序</button>
+    <div class="output">
+        <h2>排序結果：</h2>
+        <p id="result"></p>
+    </div>
+    <script>
+        // 選擇排序函式
+        function selectionSort(arr) {
+            let n = arr.length;
+            for (let i = 0; i < n - 1; i++) {
+                // 找到剩餘陣列中的最小值
+                let minIndex = i;
+                for (let j = i + 1; j < n; j++) {
+                    if (arr[j] < arr[minIndex]) {
+                        minIndex = j;
+                    }
+                }
+                // 交換最小值與當前位置
+                if (minIndex !== i) {
+                    let temp = arr[i];
+                    arr[i] = arr[minIndex];
+                    arr[minIndex] = temp;
+                }
+            }
+            return arr;
+        }
+
+        // 排序按鈕的功能
+        function sortArray() {
+            const input = document.getElementById('arrayInput').value;
+            const array = input.split(',').map(Number); // 將輸入轉換為數字陣列
+            const sortedArray = selectionSort(array); // 執行選擇排序
+            document.getElementById('result').textContent = sortedArray.join(', '); // 顯示結果
+        }
+    </script>
+</body>
+</html>
