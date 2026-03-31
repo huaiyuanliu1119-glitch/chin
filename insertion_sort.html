@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>選擇排序法範例</title>
+    <title>插入排序法範例</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             margin: 20px;
-            background: linear-gradient(160deg, #f5f9f7 0%, #fefefe 100%);
+            background: linear-gradient(160deg, #fffbf2 0%, #f5f7ff 100%);
             color: #333;
         }
         h1, h2 {
-            color: #2c6f3c;
+            color: #117a8b;
         }
         p {
             margin: 10px 0;
@@ -37,7 +37,7 @@
         }
         button {
             padding: 10px 20px;
-            background-color: #28a745;
+            background-color: #17a2b8;
             color: white;
             border: none;
             border-radius: 5px;
@@ -45,7 +45,11 @@
             font-size: 16px;
         }
         button:hover {
-            background-color: #218838;
+            background-color: #117a8b;
+        }
+        .output {
+            margin-top: 20px;
+            min-height: 60px;
         }
         input {
             padding: 10px;
@@ -54,17 +58,13 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-        .output {
-            margin-top: 20px;
-            min-height: 60px;
-        }
     </style>
 </head>
 <body>
     <nav style="margin-bottom: 20px;">
         <a href="index.html" style="color: #fff; text-decoration: none; padding: 8px 14px; background-color: #333; border-radius: 4px;">← 回到教學總覽</a>
     </nav>
-    <h1>選擇排序法</h1>
+    <h1>插入排序法</h1>
     <p>請輸入一組以逗號分隔的數字，然後按下排序按鈕來查看結果。</p>
     <input type="text" id="arrayInput" placeholder="例如：5,3,8,6,2">
     <button onclick="sortArray()">排序</button>
@@ -73,23 +73,17 @@
         <p id="result"></p>
     </div>
     <script>
-        // 選擇排序函式
-        function selectionSort(arr) {
+        // 插入排序函式
+        function insertionSort(arr) {
             let n = arr.length;
-            for (let i = 0; i < n - 1; i++) {
-                // 找到剩餘陣列中的最小值
-                let minIndex = i;
-                for (let j = i + 1; j < n; j++) {
-                    if (arr[j] < arr[minIndex]) {
-                        minIndex = j;
-                    }
+            for (let i = 1; i < n; i++) {
+                let key = arr[i];
+                let j = i - 1;
+                while (j >= 0 && arr[j] > key) {
+                    arr[j + 1] = arr[j];
+                    j = j - 1;
                 }
-                // 交換最小值與當前位置
-                if (minIndex !== i) {
-                    let temp = arr[i];
-                    arr[i] = arr[minIndex];
-                    arr[minIndex] = temp;
-                }
+                arr[j + 1] = key;
             }
             return arr;
         }
@@ -97,9 +91,9 @@
         // 排序按鈕的功能
         function sortArray() {
             const input = document.getElementById('arrayInput').value;
-            const array = input.split(',').map(Number); // 將輸入轉換為數字陣列
-            const sortedArray = selectionSort(array); // 執行選擇排序
-            document.getElementById('result').textContent = sortedArray.join(', '); // 顯示結果
+            const array = input.split(',').map(Number);
+            const sortedArray = insertionSort(array);
+            document.getElementById('result').textContent = sortedArray.join(', ');
         }
     </script>
 </body>

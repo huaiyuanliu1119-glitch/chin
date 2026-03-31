@@ -9,7 +9,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             margin: 20px;
-            background-color: #f9f9f9;
+            background: linear-gradient(160deg, #f0f4ff 0%, #f9f9f9 100%);
             color: #333;
         }
         h1, h2 {
@@ -18,16 +18,26 @@
         p {
             margin: 10px 0;
         }
-        pre {
-            background-color: #f4f4f4;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            overflow-x: auto;
+        nav a {
+            display: inline-block;
+            margin-bottom: 16px;
+            background-color: #0056b3;
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        pre, .output, .description, .steps {
+            background-color: #ffffff;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            padding: 18px;
+            border: 1px solid #dde4ed;
+            border-radius: 8px;
         }
         button {
             padding: 10px 20px;
-            background-color: #007BFF;
+            background-color: #007bff;
             color: white;
             border: none;
             border-radius: 5px;
@@ -37,34 +47,20 @@
         button:hover {
             background-color: #0056b3;
         }
-        .output {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
         input, select {
             padding: 10px;
             width: 300px;
             margin-right: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
         }
-        .description {
+        .output {
             margin-top: 20px;
-            padding: 15px;
-            background-color: #e9f7ff;
-            border: 1px solid #b3d7ff;
-            border-radius: 5px;
+            min-height: 60px;
         }
-        .steps {
+        .description, .steps {
             margin-top: 20px;
-            padding: 15px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
         }
         .steps p {
             font-family: monospace;
@@ -73,6 +69,9 @@
     </style>
 </head>
 <body>
+    <nav style="margin-bottom: 20px;">
+        <a href="index.html" style="color: #fff; text-decoration: none; padding: 8px 14px; background-color: #333; border-radius: 4px;">← 回到教學總覽</a>
+    </nav>
     <h1>氣泡排序法</h1>
     <p>氣泡排序法是一種簡單的排序演算法，透過反覆比較相鄰的元素並交換它們的位置，將較大的元素逐步「冒泡」到陣列的末端。</p>
     

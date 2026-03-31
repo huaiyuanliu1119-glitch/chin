@@ -1,181 +1,64 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>氣泡排序法 - 原理與應用</title>
+    <title>排序教學總覽</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             margin: 20px;
+            background: linear-gradient(160deg, #e8f0ff 0%, #ffffff 100%);
+            color: #222;
         }
-        h1, h2 {
-            color: #333;
+        .card {
+            max-width: 640px;
+            margin: 20px auto;
+            background: #fff;
+            border: 1px solid #dbe3f0;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 26px;
         }
-        pre {
-            background-color: #f4f4f4;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            overflow-x: auto;
+        h1 {
+            color: #0a4275;
+            margin-bottom: 16px;
         }
-        button {
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        ul {
+            list-style: none;
+            padding: 0;
         }
-        button:hover {
-            background-color: #0056b3;
+        li {
+            margin: 14px 0;
         }
-        .output {
-            margin-top: 20px;
+        a {
+            color: #0056b3;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px 15px;
+            border: 1px solid #d3e0f5;
+            background: #f8fbff;
+            border-radius: 6px;
+            transition: all 0.18s ease;
+            display: inline-block;
         }
-        input {
-            padding: 10px;
-            width: 300px;
-            margin-right: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+        a:hover {
+            text-decoration: none;
+            border-color: #5a95e3;
+            background: #e9efff;
         }
     </style>
 </head>
 <body>
-    <h1>氣泡排序法</h1>
-    <p>輸入一組以逗號分隔的數字，然後按下排序按鈕來查看結果。</p>
-    <input type="text" id="arrayInput" placeholder="例如：5,3,8,6,2">
-    <button onclick="sortArray()">排序</button>
-    <div class="output">
-        <h2>排序結果：</h2>
-        <p id="result"></p>
+    <div class="card">
+        <h1>排序演算法教學頁面</h1>
+        <p>請選擇以下排序演算法進入詳解與互動範例：</p>
+        <ul>
+            <li><a href="bubble-sort.html">氣泡排序法（Bubble Sort）</a></li>
+            <li><a href="selection_sort.html">選擇排序法（Selection Sort）</a></li>
+            <li><a href="insertion_sort.html">插入排序法（Insertion Sort）</a></li>
+        </ul>
     </div>
-    <script>
-        // 氣泡排序函式
-        function bubbleSort(arr) {
-            let n = arr.length;
-            for (let i = 0; i < n - 1; i++) {
-                for (let j = 0; j < n - i - 1; j++) {
-                    if (arr[j] > arr[j + 1]) {
-                        // 交換元素
-                        let temp = arr[j];
-                        arr[j] = arr[j + 1];
-                        arr[j + 1] = temp;
-                    }
-                }
-            }
-            return arr;
-        }
-
-        // 排序按鈕的功能
-        function sortArray() {
-            const input = document.getElementById('arrayInput').value;
-            const array = input.split(',').map(Number); // 將輸入轉換為數字陣列
-            const sortedArray = bubbleSort(array); // 執行氣泡排序
-            document.getElementById('result').textContent = sortedArray.join(', '); // 顯示結果
-        }
-    </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>氣泡排序法 - 原理與應用</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 20px;
-        }
-        h1, h2 {
-            color: #333;
-        }
-        pre {
-            background-color: #f4f4f4;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            overflow-x: auto;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .output {
-            margin-top: 20px;
-        }
-    </style>
-    <script>
-        // 氣泡排序函式
-        function bubbleSort(arr) {
-            let n = arr.length;
-            for (let i = 0; i < n - 1; i++) {
-                for (let j = 0; j < n - i - 1; j++) {
-                    if (arr[j] > arr[j + 1]) {
-                        // 交換元素
-                        let temp = arr[j];
-                        arr[j] = arr[j + 1];
-                        arr[j + 1] = temp;
-                    }
-                }
-            }
-            return arr;
-        }
-
-        // 執行排序並顯示結果
-        function sortAndDisplay() {
-            let data = [64, 34, 25, 12, 22, 11, 90];
-            document.getElementById("original").textContent = "原始資料: " + data.join(", ");
-            let sortedData = bubbleSort(data);
-            document.getElementById("sorted").textContent = "排序後資料: " + sortedData.join(", ");
-        }
-    </script>
-</head>
-<body>
-    <h1>氣泡排序法</h1>
-    <h2>原理</h2>
-    <p>氣泡排序法是一種簡單的排序演算法。它會反覆地遍歷要排序的資料列，依次比較相鄰的兩個元素，若順序錯誤則交換它們的位置。這個過程會重複進行，直到沒有需要交換的元素為止。</p>
-    <p>氣泡排序的名稱來源於較大的元素會逐漸「浮」到資料列的頂端，就像氣泡上升到水面一樣。</p>
-    <h2>應用</h2>
-    <p>氣泡排序法適用於小型資料集的排序，因為它的時間複雜度為 O(n²)，對於大型資料集效率較低。它的主要應用包括：</p>
-    <ul>
-        <li>學習排序演算法的基礎概念</li>
-        <li>需要簡單實現的情境</li>
-        <li>小型資料集的排序</li>
-    </ul>
-    <h2>範例程式碼</h2>
-    <pre>
-&lt;script&gt;
-    // 氣泡排序函式
-    function bubbleSort(arr) {
-        let n = arr.length;
-        for (let i = 0; i &lt; n - 1; i++) {
-            for (let j = 0; j &lt; n - i - 1; j++) {
-                if (arr[j] &gt; arr[j + 1]) {
-                    // 交換元素
-                    let temp = arr[j];
-                    arr[j] = arr[j + 1];
-                    arr[j + 1] = temp;
-                }
-            }
-        }
-        return arr;
-    }
-&lt;/script&gt;
-    </pre>
-    <h2>執行範例</h2>
-    <p id="original">原始資料: </p>
-    <p id="sorted">排序後資料: </p>
-    <button onclick="sortAndDisplay()">執行排序</button>
 </body>
 </html>
