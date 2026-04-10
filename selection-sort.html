@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>選擇排序法範例</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background: linear-gradient(160deg, #f0f4ff 0%, #f9f9f9 100%);
+            color: #333;
+        }
+        h1, h2 {
+            color: #0056b3;
+        }
+        p {
+            margin: 10px 0;
+        }
+        nav a {
+            display: inline-block;
+            margin-bottom: 16px;
+            background-color: #0056b3;
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        pre, .output, .description, .steps {
+            background-color: #ffffff;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            padding: 18px;
+            border: 1px solid #dde4ed;
+            border-radius: 8px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input, select {
+            padding: 10px;
+            width: 300px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .output {
+            margin-top: 20px;
+            min-height: 60px;
+        }
+        .description, .steps {
+            margin-top: 20px;
+        }
+        .steps p {
+            font-family: monospace;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <nav style="margin-bottom: 20px;">
+        <a href="README.md" style="color: #fff; text-decoration: none; padding: 8px 14px; background-color: #333; border-radius: 4px;">← 回到教學總覽</a>
+    </nav>
+    <h1>選擇排序法</h1>
+    <p>選擇排序法是一種簡單的排序演算法，每次從未排序的部分中選出最小（或最大）的元素，放入已排序部分的末尾。</p>
+    
+    <div class="description">
+        <h2>選擇排序法的原理</h2>
+        <p>選擇排序法的運作方式如下：</p>
+        <ol>
+            <li>從陣列的第一位開始，尋找未排序部分中的最小元素。</li>
+            <li>將最小元素與當前位置交換。</li>
+            <li>移動已排序部分的邊界，縮小未排序範圍。</li>
+            <li>重複上述步驟，直到所有元素都排序完成。</li>
+        </ol>
+        <p>選擇排序法的時間複雜度為 <strong>O(n²)</strong>，但交換次數較少，適合交換操作昂貴的場景。</p>
+    </div>
+
+    <h2>試試看！</h2>
+    <p>請輸入一組以逗號分隔的數字，選擇排序方式，然後按下排序按鈕來查看結果。</p>
+    <input type="text" id="arrayInput" placeholder="例如：5,3,8,6,2">
+    <select id="sortOrder">
+        <option value="asc">遞增排序</option>
+        <option value="desc">遞減排序</option>
+    </select>
+    <button onclick="sortArray()">排序</button>
+    <div class="output">
+        <h2>排序結果：</h2>
+        <p id="result"></p>
+    </div>
+    <div class="steps">
+        <h2>排序過程：</h2>
+        <div id="steps"></div>
+    </div>
+
+    <script>
+        // 選擇排序函式
+        function selectionSort(arr, order) {
+            let n = arr.length;
+            let steps = [];
+            for (let i = 0; i < n - 1; i++) {
+                let minIndex = i;
+                for (let j = i + 1; j < n; j++) {
+                    if ((order === 'asc' && arr[j] < arr[minIndex]) || (order === 'desc' && arr[j] > arr[minIndex])) {
+                        minIndex = j;
+                    }
+                }
+                // 交換元素
+                if (minIndex !== i) {
+                    let temp = arr[i];
+                    arr[i] = arr[minIndex];
+                    arr[minIndex] = temp;
+                }
+                // 儲存每輪排序後的陣列狀態
+                steps.push(`第 ${i + 1} 輪（與位置 ${i} 交換）: ${arr.join(', ')}`);
+            }
+            return { sortedArray: arr, steps };
+        }
+
+        // 排序按鈕的功能
+        function sortArray() {
+            const input = document.getElementById('arrayInput').value;
+            const order = document.getElementById('sortOrder').value;
+            const array = input.split(',').map(Number); // 將輸入轉換為數字陣列
+            const { sortedArray, steps } = selectionSort(array, order); // 執行選擇排序
+            document.getElementById('result').textContent = sortedArray.join(', '); // 顯示結果
+
+            // 顯示排序過程
+            const stepsContainer = document.getElementById('steps');
+            stepsContainer.innerHTML = ''; // 清空舊內容
+            steps.forEach(step => {
+                const p = document.createElement('p');
+                p.textContent = step;
+                stepsContainer.appendChild(p);
+            });
+        }
+    </script>
+</body>
+</html>
