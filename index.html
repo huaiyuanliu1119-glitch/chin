@@ -1,0 +1,1268 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>排序演算法分析報告</title>
+    <style>
+        :root {
+            --bg: #f4efe7;
+            --surface: rgba(255, 251, 245, 0.86);
+            --surface-strong: #fffaf2;
+            --ink: #1e2430;
+            --muted: #5b6472;
+            --line: rgba(95, 79, 57, 0.18);
+            --primary: #b5542f;
+            --primary-deep: #7f3116;
+            --accent: #1a7f6b;
+            --accent-soft: #d8f1eb;
+            --shadow: 0 24px 60px rgba(83, 54, 29, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            color: var(--ink);
+            font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+            line-height: 1.7;
+            background:
+                radial-gradient(circle at top left, rgba(181, 84, 47, 0.16), transparent 30%),
+                radial-gradient(circle at top right, rgba(26, 127, 107, 0.16), transparent 24%),
+                linear-gradient(180deg, #f8f3eb 0%, #f4efe7 44%, #eee8de 100%);
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+            background-size: 32px 32px;
+            mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.32), transparent 70%);
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .page {
+            width: min(1120px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 32px 0 56px;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(16px);
+            background: rgba(248, 243, 235, 0.82);
+            border-bottom: 1px solid rgba(95, 79, 57, 0.12);
+        }
+
+        .topbar-inner {
+            width: min(1120px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 14px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .brand {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .brand strong {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 1.15rem;
+            letter-spacing: 0.04em;
+        }
+
+        .brand span {
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .top-links,
+        .hero-links,
+        .section-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .top-links a,
+        .hero-links a,
+        .section-links a {
+            text-decoration: none;
+            border-radius: 999px;
+            font-weight: 700;
+            transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
+        }
+
+        .top-links a {
+            padding: 10px 14px;
+            color: var(--ink);
+            background: rgba(255, 255, 255, 0.62);
+            border: 1px solid rgba(95, 79, 57, 0.1);
+        }
+
+        .top-links a:hover,
+        .hero-links a:hover,
+        .section-links a:hover {
+            transform: translateY(-1px);
+        }
+
+        .hero,
+        .section,
+        .benchmark,
+        .summary-card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(14px);
+        }
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            padding: 40px;
+            margin-bottom: 24px;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: auto -120px -120px auto;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(181, 84, 47, 0.24), transparent 70%);
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(26, 127, 107, 0.1);
+            color: var(--accent);
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: Georgia, "Times New Roman", serif;
+            line-height: 1.2;
+            margin: 0;
+        }
+
+        h1 {
+            font-size: clamp(2.4rem, 5vw, 4.4rem);
+            max-width: 10ch;
+            margin-bottom: 16px;
+        }
+
+        h2 {
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            margin-bottom: 14px;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .hero p,
+        .section p,
+        .section li,
+        td,
+        th,
+        .meta {
+            color: var(--muted);
+        }
+
+        .hero-grid,
+        .overview-grid,
+        .card-grid,
+        .insight-grid,
+        .link-grid,
+        .footer-grid {
+            display: grid;
+            gap: 18px;
+        }
+
+        .hero-grid {
+            grid-template-columns: 1.5fr 1fr;
+            align-items: end;
+        }
+
+        .hero-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .hero-links a,
+        .section-links a {
+            padding: 10px 16px;
+            color: var(--primary-deep);
+            background: rgba(255, 255, 255, 0.82);
+            border: 1px solid rgba(95, 79, 57, 0.12);
+        }
+
+        .hero-links a span,
+        .section-links a span {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--muted);
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .button,
+        button {
+            appearance: none;
+            border: none;
+            border-radius: 999px;
+            padding: 12px 20px;
+            font-size: 0.98rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+        }
+
+        .button,
+        #runBenchmark {
+            color: #fff;
+            text-decoration: none;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-deep) 100%);
+            box-shadow: 0 12px 26px rgba(127, 49, 22, 0.22);
+        }
+
+        .button.secondary {
+            color: var(--primary-deep);
+            background: rgba(181, 84, 47, 0.1);
+            box-shadow: none;
+        }
+
+        .button:hover,
+        button:hover {
+            transform: translateY(-1px);
+        }
+
+        .summary-card {
+            padding: 22px;
+            background: linear-gradient(180deg, rgba(255, 250, 242, 0.94), rgba(255, 245, 234, 0.86));
+        }
+
+        .summary-card strong {
+            display: block;
+            font-size: 2.6rem;
+            color: var(--primary-deep);
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .summary-list {
+            margin: 16px 0 0;
+            padding-left: 18px;
+            color: var(--muted);
+        }
+
+        .report-map {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin: 0 0 22px;
+        }
+
+        .report-map article {
+            padding: 18px;
+            border-radius: 20px;
+            background: rgba(255, 250, 242, 0.88);
+            border: 1px solid rgba(95, 79, 57, 0.12);
+            box-shadow: 0 14px 32px rgba(83, 54, 29, 0.08);
+        }
+
+        .report-map strong {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 1.05rem;
+        }
+
+        .overview-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            margin-top: 26px;
+        }
+
+        .overview-grid div {
+            padding: 18px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.55);
+            border: 1px solid rgba(95, 79, 57, 0.12);
+        }
+
+        .overview-grid strong {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--ink);
+        }
+
+        .section,
+        .benchmark {
+            padding: 30px;
+            margin-bottom: 22px;
+        }
+
+        .section-index {
+            margin-bottom: 22px;
+            padding: 20px 22px;
+            border-radius: 22px;
+            border: 1px solid rgba(95, 79, 57, 0.14);
+            background: linear-gradient(180deg, rgba(255, 250, 242, 0.92), rgba(255, 247, 238, 0.72));
+        }
+
+        .section-index p {
+            margin: 0 0 12px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .card-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .algo-card,
+        .insight-card,
+        .link-card,
+        .metric-card {
+            padding: 22px;
+            border-radius: 20px;
+            border: 1px solid rgba(95, 79, 57, 0.14);
+            background: var(--surface-strong);
+        }
+
+        .algo-card ul,
+        .insight-card ul {
+            padding-left: 18px;
+            margin: 10px 0 0;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 10px;
+            margin-bottom: 12px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(95, 79, 57, 0.14);
+        }
+
+        th,
+        td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(95, 79, 57, 0.1);
+        }
+
+        th {
+            color: var(--ink);
+            background: rgba(181, 84, 47, 0.08);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .benchmark-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .benchmark-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .status {
+            min-height: 24px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .metric-card strong {
+            display: block;
+            color: var(--primary-deep);
+            font-size: 1.4rem;
+            margin-bottom: 6px;
+        }
+
+        .chart-wrap {
+            margin-top: 20px;
+            padding: 18px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.62);
+            border: 1px solid rgba(95, 79, 57, 0.12);
+        }
+
+        canvas {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .insight-grid,
+        .link-grid,
+        .footer-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .link-card {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .link-card .inline-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .inline-links a {
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(181, 84, 47, 0.08);
+            color: var(--primary-deep);
+            font-size: 0.92rem;
+            text-decoration: none;
+        }
+
+        .link-card a {
+            color: var(--primary-deep);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .link-card a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-grid {
+            margin-top: 18px;
+        }
+
+        .meta {
+            font-size: 0.95rem;
+        }
+
+        .highlight {
+            color: var(--primary-deep);
+            font-weight: 700;
+        }
+
+        @media (max-width: 900px) {
+            .topbar-inner,
+            .hero-grid,
+            .overview-grid,
+            .report-map,
+            .card-grid,
+            .metrics,
+            .insight-grid,
+            .link-grid,
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar-inner {
+                flex-direction: column;
+                align-items: start;
+            }
+
+            .benchmark-top,
+            .section-header {
+                flex-direction: column;
+                align-items: start;
+            }
+
+            .hero {
+                padding: 28px;
+            }
+
+            .section,
+            .benchmark {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <div class="brand">
+                <strong>Sorting Analysis Report</strong>
+                <span>五種排序法的理論、模擬與比較入口</span>
+            </div>
+            <nav class="top-links" aria-label="主要導覽">
+                <a href="#algorithms">排序法介紹</a>
+                <a href="#complexity">複雜度分析</a>
+                <a href="#benchmark">數據模擬</a>
+                <a href="#examples">互動頁面</a>
+            </nav>
+        </div>
+    </header>
+    <main class="page">
+        <section class="hero" id="top">
+            <div class="hero-grid">
+                <div class="hero-copy">
+                    <div class="eyebrow">Sorting Report 2026</div>
+                    <h1>排序演算法分析報告</h1>
+                    <p>本報告整合理論說明、複雜度分析、程式模擬、結果比較與心得結論，針對氣泡排序、選擇排序、插入排序、合併排序與快速排序進行完整比較。</p>
+                    <div class="hero-links" aria-label="排序頁面快速入口">
+                        <a href="bubble-sort.html">Bubble Sort<span>氣泡排序互動頁</span></a>
+                        <a href="selection-sort.html">Selection Sort<span>選擇排序互動頁</span></a>
+                        <a href="insertion_sort.html">Insertion Sort<span>插入排序互動頁</span></a>
+                        <a href="merge-sort.html">Merge Sort<span>合併排序示範頁</span></a>
+                        <a href="quick-sort.html">Quick Sort<span>快速排序示範頁</span></a>
+                    </div>
+                    <div class="hero-actions">
+                        <a class="button" href="#benchmark">執行實驗模擬</a>
+                        <a class="button secondary" href="#conclusion">查看結論</a>
+                        <a class="button secondary" href="#examples">查看所有連結</a>
+                    </div>
+                </div>
+                <aside class="summary-card">
+                    <strong>5</strong>
+                    <p>種排序法比較，涵蓋 <span class="highlight">O(n^2)</span> 與 <span class="highlight">O(n log n)</span> 兩類代表演算法。</p>
+                    <p class="meta">建議以桌面瀏覽器開啟，先閱讀理論，再執行下方 benchmark 觀察排序時間隨 n 增長的變化。</p>
+                    <ul class="summary-list">
+                        <li>首頁可直接閱讀完整報告</li>
+                        <li>每個排序法都有獨立分頁入口</li>
+                        <li>實驗結果會即時更新表格與圖表</li>
+                    </ul>
+                </aside>
+            </div>
+            <section class="section-index" aria-label="段落索引">
+                <p>段落索引</p>
+                <nav class="section-links">
+                    <a href="#intro">前言<span>作業目的與範圍</span></a>
+                    <a href="#algorithms">五個排序法<span>原理與操作方式</span></a>
+                    <a href="#complexity">複雜度分析<span>時間與空間比較</span></a>
+                    <a href="#experiment-design">實驗設計<span>資料規模與量測方法</span></a>
+                    <a href="#comparison">結果比較<span>效能差異解讀</span></a>
+                    <a href="#conclusion">心得結論<span>個人觀察整理</span></a>
+                </nav>
+            </section>
+            <div class="overview-grid">
+                <div>
+                    <strong>前言</strong>
+                    <span>排序是資料處理與搜尋前置作業的核心能力。</span>
+                </div>
+                <div>
+                    <strong>理論面</strong>
+                    <span>從基本原理、穩定性與時間空間複雜度切入。</span>
+                </div>
+                <div>
+                    <strong>實驗面</strong>
+                    <span>以 JavaScript 在瀏覽器中產生隨機資料並量測平均時間。</span>
+                </div>
+                <div>
+                    <strong>結論面</strong>
+                    <span>整理不同資料規模下的效能表現與適用情境。</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="report-map" aria-label="報告總覽卡片">
+            <article>
+                <strong>原理導向</strong>
+                <span>用文字說明每一種排序法怎麼移動、比較與完成排序。</span>
+            </article>
+            <article>
+                <strong>複雜度導向</strong>
+                <span>把最佳、平均、最差情況放在同一張表中比較。</span>
+            </article>
+            <article>
+                <strong>實驗導向</strong>
+                <span>同一組隨機資料交給五種排序法，避免比較失真。</span>
+            </article>
+            <article>
+                <strong>導覽導向</strong>
+                <span>首頁負責整體閱讀，分頁負責單一排序法的互動展示。</span>
+            </article>
+        </section>
+
+        <section class="section" id="intro">
+            <div class="section-header">
+                <div>
+                    <h2>前言</h2>
+                    <p>排序演算法是演算法課程中的核心主題，因為它直接體現了資料規模、設計策略與時間複雜度之間的關係。</p>
+                </div>
+            </div>
+            <p>同樣是將資料由小到大排列，不同方法在小型資料集上可能差異不大，但在大型資料集上往往會拉出數十倍甚至數百倍的執行時間差距。本作業的重點不只是寫出五種排序，而是把 <span class="highlight">理論分析</span> 與 <span class="highlight">實際量測</span> 放在同一個框架下比較，理解演算法選擇如何影響最終效能。</p>
+        </section>
+
+        <section class="section" id="algorithms">
+            <div class="section-header">
+                <div>
+                    <h2>五個排序法介紹</h2>
+                    <p>以下依序說明五種排序法的基本原理、操作方式與適用特性。</p>
+                </div>
+            </div>
+            <div class="card-grid">
+                <article class="algo-card">
+                    <div class="tag">Bubble Sort</div>
+                    <h3>氣泡排序</h3>
+                    <p>反覆比較相鄰元素並交換位置，使較大的數逐步往尾端移動。每完成一輪，至少有一個元素會回到正確位置。</p>
+                    <ul>
+                        <li>操作方式直觀，適合教學展示。</li>
+                        <li>若資料幾乎已排序，可透過提早停止降低實際耗時。</li>
+                        <li>屬於穩定排序，但大規模資料效率差。</li>
+                    </ul>
+                </article>
+                <article class="algo-card">
+                    <div class="tag">Selection Sort</div>
+                    <h3>選擇排序</h3>
+                    <p>每一輪從未排序區間挑出最小值，放到目前位置。比較次數固定，但交換次數相對少。</p>
+                    <ul>
+                        <li>流程簡單，便於理解「逐步確定最小值」的策略。</li>
+                        <li>無論原始資料是否接近排序完成，時間表現都接近固定。</li>
+                        <li>通常不穩定，且整體效率仍屬 O(n^2)。</li>
+                    </ul>
+                </article>
+                <article class="algo-card">
+                    <div class="tag">Insertion Sort</div>
+                    <h3>插入排序</h3>
+                    <p>維持一段已排序區間，依序將新元素插入適當位置，像整理手上的撲克牌一樣。</p>
+                    <ul>
+                        <li>對於小型資料或幾乎已排序資料表現很好。</li>
+                        <li>屬於穩定排序，且原地操作，空間需求低。</li>
+                        <li>當資料量變大，移動成本會迅速上升。</li>
+                    </ul>
+                </article>
+                <article class="algo-card">
+                    <div class="tag">Merge Sort</div>
+                    <h3>合併排序</h3>
+                    <p>採用分治法，先把陣列拆成更小的子陣列，再把已排序子陣列逐步合併回來。</p>
+                    <ul>
+                        <li>時間複雜度穩定維持在 O(n log n)。</li>
+                        <li>適合需要穩定排序與可預期效能的情境。</li>
+                        <li>缺點是需要額外的暫存空間。</li>
+                    </ul>
+                </article>
+                <article class="algo-card">
+                    <div class="tag">Quick Sort</div>
+                    <h3>快速排序</h3>
+                    <p>選定一個樞紐值，將資料分成小於樞紐與大於樞紐兩側，再遞迴完成排序。</p>
+                    <ul>
+                        <li>平均情況下速度極快，是實務上常見的高效排序策略。</li>
+                        <li>原地分割使空間效率佳。</li>
+                        <li>若樞紐選得很差，最差時間會退化為 O(n^2)。</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <section class="section" id="complexity">
+            <div class="section-header">
+                <div>
+                    <h2>複雜度分析</h2>
+                    <p>排序法除了程式寫法不同，更關鍵的是時間成長率與額外空間需求。</p>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>排序法</th>
+                        <th>最佳時間</th>
+                        <th>平均時間</th>
+                        <th>最差時間</th>
+                        <th>空間複雜度</th>
+                        <th>穩定性</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>氣泡排序</td>
+                        <td>O(n)</td>
+                        <td>O(n^2)</td>
+                        <td>O(n^2)</td>
+                        <td>O(1)</td>
+                        <td>穩定</td>
+                    </tr>
+                    <tr>
+                        <td>選擇排序</td>
+                        <td>O(n^2)</td>
+                        <td>O(n^2)</td>
+                        <td>O(n^2)</td>
+                        <td>O(1)</td>
+                        <td>不穩定</td>
+                    </tr>
+                    <tr>
+                        <td>插入排序</td>
+                        <td>O(n)</td>
+                        <td>O(n^2)</td>
+                        <td>O(n^2)</td>
+                        <td>O(1)</td>
+                        <td>穩定</td>
+                    </tr>
+                    <tr>
+                        <td>合併排序</td>
+                        <td>O(n log n)</td>
+                        <td>O(n log n)</td>
+                        <td>O(n log n)</td>
+                        <td>O(n)</td>
+                        <td>穩定</td>
+                    </tr>
+                    <tr>
+                        <td>快速排序</td>
+                        <td>O(n log n)</td>
+                        <td>O(n log n)</td>
+                        <td>O(n^2)</td>
+                        <td>O(log n)</td>
+                        <td>不穩定</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="insight-grid" style="margin-top: 18px;">
+                <article class="insight-card">
+                    <h3>O(n^2) 類型</h3>
+                    <p>氣泡、選擇與插入排序在資料量翻倍時，所需操作次數接近平方成長，因此只適合小型資料或教學情境。</p>
+                </article>
+                <article class="insight-card">
+                    <h3>O(n log n) 類型</h3>
+                    <p>合併與快速排序能在較大規模維持優勢，是實務中更常用的主流方法。</p>
+                </article>
+                <article class="insight-card">
+                    <h3>理論重點</h3>
+                    <p>時間複雜度決定成長趨勢，空間複雜度則影響記憶體使用；選演算法時通常要兩者一起看。</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="section" id="experiment-design">
+            <div class="section-header">
+                <div>
+                    <h2>實驗設計</h2>
+                    <p>實驗目標是觀察不同資料規模下，五種排序法的實際時間差距是否符合理論。</p>
+                </div>
+            </div>
+            <div class="footer-grid">
+                <div class="metric-card">
+                    <strong>資料規模</strong>
+                    <span>100、500、1000、2000、4000</span>
+                </div>
+                <div class="metric-card">
+                    <strong>資料內容</strong>
+                    <span>0 到 99999 的隨機整數，使用同一組輸入複製給各排序法。</span>
+                </div>
+                <div class="metric-card">
+                    <strong>量測方式</strong>
+                    <span>每個規模重複 3 次，使用 performance.now() 計算平均毫秒數。</span>
+                </div>
+            </div>
+            <p style="margin-top: 18px;">為了避免 O(n^2) 演算法在瀏覽器內執行時間過長，本頁將最大規模控制在 4000 筆。雖然不是極大資料量，但已足以看出二次方成長與對數線性成長之間的差異。</p>
+        </section>
+
+        <section class="benchmark" id="benchmark">
+            <div class="benchmark-top">
+                <div>
+                    <h2>數據模擬與結果呈現</h2>
+                    <p>點擊下方按鈕後，頁面會即時執行五種排序並更新表格與圖表。</p>
+                </div>
+                <div class="benchmark-controls">
+                    <button id="runBenchmark" type="button">執行 benchmark</button>
+                    <div id="benchmarkStatus" class="status">尚未執行實驗。</div>
+                </div>
+            </div>
+            <div class="metrics">
+                <div class="metric-card">
+                    <strong id="bestAlgorithm">-</strong>
+                    <span>平均速度最快的排序法</span>
+                </div>
+                <div class="metric-card">
+                    <strong id="largestGap">-</strong>
+                    <span>最大資料量下的最快與最慢差距</span>
+                </div>
+                <div class="metric-card">
+                    <strong id="trendSummary">-</strong>
+                    <span>整體趨勢摘要</span>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>n</th>
+                        <th>氣泡排序</th>
+                        <th>選擇排序</th>
+                        <th>插入排序</th>
+                        <th>合併排序</th>
+                        <th>快速排序</th>
+                    </tr>
+                </thead>
+                <tbody id="resultTableBody">
+                    <tr>
+                        <td>100</td>
+                        <td colspan="5">尚未執行實驗</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="chart-wrap">
+                <canvas id="benchmarkChart" width="1040" height="420" aria-label="排序效能比較圖"></canvas>
+            </div>
+        </section>
+
+        <section class="section" id="comparison">
+            <div class="section-header">
+                <div>
+                    <h2>結果比較與分析</h2>
+                    <p>理論與實驗通常會呈現一致趨勢，但實際數字仍會受到執行環境與常數因子影響。</p>
+                </div>
+            </div>
+            <div class="insight-grid">
+                <article class="insight-card">
+                    <h3>小規模資料</h3>
+                    <p>當 n 不大時，所有排序法的耗時都很短，差異不容易放大。這也是為什麼小型作業或面試手寫題常先從簡單排序法開始。</p>
+                </article>
+                <article class="insight-card">
+                    <h3>中大型資料</h3>
+                    <p>一旦資料量進入數千筆，氣泡、選擇與插入排序的成本開始快速上升，而合併排序與快速排序仍保持明顯優勢。</p>
+                </article>
+                <article class="insight-card">
+                    <h3>實務選擇</h3>
+                    <p>如果要求穩定排序，合併排序通常更安全；若追求平均效能，快速排序通常是更常見的選擇。</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="section" id="conclusion">
+            <div class="section-header">
+                <div>
+                    <h2>心得與結論</h2>
+                    <p>排序演算法的核心價值，不在於背誦步驟，而在於理解資料規模改變時，效能如何被複雜度主導。</p>
+                </div>
+            </div>
+            <div class="insight-grid">
+                <article class="insight-card">
+                    <h3>心得一</h3>
+                    <p>透過實驗可以很清楚地看到，O(n^2) 與 O(n log n) 的差異在資料量變大後會迅速放大，這比單看公式更有感。</p>
+                </article>
+                <article class="insight-card">
+                    <h3>心得二</h3>
+                    <p>簡單排序法並非沒有價值。它們在概念教學、小型資料、部分排序資料或交換成本高的情境下仍然有實用性。</p>
+                </article>
+                <article class="insight-card">
+                    <h3>心得三</h3>
+                    <p>選擇演算法時不能只看平均速度，還要考慮穩定性、額外空間與輸入資料特性，這也是實作與理論之間最重要的連結。</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="section" id="examples">
+            <div class="section-header">
+                <div>
+                    <h2>互動範例連結</h2>
+                    <p>如果要逐步觀察排序過程，可進入各分頁查看單一演算法的示範。</p>
+                </div>
+            </div>
+            <div class="link-grid">
+                <article class="link-card">
+                    <h3>氣泡排序</h3>
+                    <p>適合觀察相鄰交換與逐輪冒泡的效果。</p>
+                    <a href="bubble-sort.html">前往氣泡排序頁面</a>
+                </article>
+                <article class="link-card">
+                    <h3>選擇排序</h3>
+                    <p>可看到每一輪如何找出最小值並固定位置。</p>
+                    <a href="selection-sort.html">前往選擇排序頁面</a>
+                </article>
+                <article class="link-card">
+                    <h3>插入排序</h3>
+                    <p>觀察元素插入已排序區間的過程。</p>
+                    <a href="insertion_sort.html">前往插入排序頁面</a>
+                </article>
+                <article class="link-card">
+                    <h3>合併排序</h3>
+                    <p>理解分治拆解與合併回來的步驟。</p>
+                    <a href="merge-sort.html">前往合併排序頁面</a>
+                </article>
+                <article class="link-card">
+                    <h3>快速排序</h3>
+                    <p>觀察樞紐分割左右區間的邏輯。</p>
+                    <a href="quick-sort.html">前往快速排序頁面</a>
+                </article>
+                <article class="link-card">
+                    <h3>報告段落快速跳轉</h3>
+                    <p>如果要口頭報告或課堂展示，可以直接從首頁切換到對應章節。</p>
+                    <div class="inline-links">
+                        <a href="#intro">前言</a>
+                        <a href="#complexity">複雜度</a>
+                        <a href="#benchmark">數據模擬</a>
+                        <a href="#comparison">結果比較</a>
+                        <a href="#conclusion">心得結論</a>
+                    </div>
+                </article>
+            </div>
+            <div class="footer-grid">
+                <div class="metric-card">
+                    <strong>報告架構</strong>
+                    <span>前言、排序法原理、複雜度分析、實驗設計、結果比較、心得結論。</span>
+                </div>
+                <div class="metric-card">
+                    <strong>報告日期</strong>
+                    <span>2026 年 4 月 11 日</span>
+                </div>
+                <div class="metric-card">
+                    <strong>作者</strong>
+                    <span>huaiyuanliu1119-glitch</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const datasetSizes = [100, 500, 1000, 2000, 4000];
+        const repetitions = 3;
+        const algorithmOrder = [
+            { key: "bubble", label: "氣泡排序", color: "#d26a3d" },
+            { key: "selection", label: "選擇排序", color: "#4178be" },
+            { key: "insertion", label: "插入排序", color: "#0d8b76" },
+            { key: "merge", label: "合併排序", color: "#7a56c2" },
+            { key: "quick", label: "快速排序", color: "#d4a017" }
+        ];
+
+        const statusEl = document.getElementById("benchmarkStatus");
+        const bodyEl = document.getElementById("resultTableBody");
+        const bestAlgorithmEl = document.getElementById("bestAlgorithm");
+        const largestGapEl = document.getElementById("largestGap");
+        const trendSummaryEl = document.getElementById("trendSummary");
+        const chart = document.getElementById("benchmarkChart");
+        const chartCtx = chart.getContext("2d");
+        const benchmarkButton = document.getElementById("runBenchmark");
+
+        function bubbleSort(values) {
+            const arr = values.slice();
+            for (let i = 0; i < arr.length - 1; i++) {
+                let swapped = false;
+                for (let j = 0; j < arr.length - i - 1; j++) {
+                    if (arr[j] > arr[j + 1]) {
+                        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                        swapped = true;
+                    }
+                }
+                if (!swapped) {
+                    break;
+                }
+            }
+            return arr;
+        }
+
+        function selectionSort(values) {
+            const arr = values.slice();
+            for (let i = 0; i < arr.length - 1; i++) {
+                let minIndex = i;
+                for (let j = i + 1; j < arr.length; j++) {
+                    if (arr[j] < arr[minIndex]) {
+                        minIndex = j;
+                    }
+                }
+                if (minIndex !== i) {
+                    [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+                }
+            }
+            return arr;
+        }
+
+        function insertionSort(values) {
+            const arr = values.slice();
+            for (let i = 1; i < arr.length; i++) {
+                const current = arr[i];
+                let j = i - 1;
+                while (j >= 0 && arr[j] > current) {
+                    arr[j + 1] = arr[j];
+                    j -= 1;
+                }
+                arr[j + 1] = current;
+            }
+            return arr;
+        }
+
+        function mergeSort(values) {
+            if (values.length <= 1) {
+                return values.slice();
+            }
+            const middle = Math.floor(values.length / 2);
+            const left = mergeSort(values.slice(0, middle));
+            const right = mergeSort(values.slice(middle));
+            return merge(left, right);
+        }
+
+        function merge(left, right) {
+            const merged = [];
+            let leftIndex = 0;
+            let rightIndex = 0;
+
+            while (leftIndex < left.length && rightIndex < right.length) {
+                if (left[leftIndex] <= right[rightIndex]) {
+                    merged.push(left[leftIndex]);
+                    leftIndex += 1;
+                } else {
+                    merged.push(right[rightIndex]);
+                    rightIndex += 1;
+                }
+            }
+
+            return merged.concat(left.slice(leftIndex), right.slice(rightIndex));
+        }
+
+        function quickSort(values) {
+            const arr = values.slice();
+            quickSortInPlace(arr, 0, arr.length - 1);
+            return arr;
+        }
+
+        function quickSortInPlace(arr, low, high) {
+            if (low >= high) {
+                return;
+            }
+            const pivotIndex = partition(arr, low, high);
+            quickSortInPlace(arr, low, pivotIndex - 1);
+            quickSortInPlace(arr, pivotIndex + 1, high);
+        }
+
+        function partition(arr, low, high) {
+            const pivot = arr[high];
+            let smallerIndex = low;
+            for (let i = low; i < high; i++) {
+                if (arr[i] < pivot) {
+                    [arr[smallerIndex], arr[i]] = [arr[i], arr[smallerIndex]];
+                    smallerIndex += 1;
+                }
+            }
+            [arr[smallerIndex], arr[high]] = [arr[high], arr[smallerIndex]];
+            return smallerIndex;
+        }
+
+        const algorithms = {
+            bubble: bubbleSort,
+            selection: selectionSort,
+            insertion: insertionSort,
+            merge: mergeSort,
+            quick: quickSort
+        };
+
+        function generateRandomArray(size) {
+            return Array.from({ length: size }, () => Math.floor(Math.random() * 100000));
+        }
+
+        function benchmark(sortFn, sample) {
+            let total = 0;
+            for (let i = 0; i < repetitions; i++) {
+                const copy = sample.slice();
+                const start = performance.now();
+                sortFn(copy);
+                const end = performance.now();
+                total += end - start;
+            }
+            return total / repetitions;
+        }
+
+        function updateTable(results) {
+            bodyEl.innerHTML = "";
+            results.forEach((row) => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${row.size}</td>
+                    <td>${row.bubble.toFixed(3)} ms</td>
+                    <td>${row.selection.toFixed(3)} ms</td>
+                    <td>${row.insertion.toFixed(3)} ms</td>
+                    <td>${row.merge.toFixed(3)} ms</td>
+                    <td>${row.quick.toFixed(3)} ms</td>
+                `;
+                bodyEl.appendChild(tr);
+            });
+        }
+
+        function updateSummary(results) {
+            const totals = algorithmOrder.map(({ key, label }) => {
+                const average = results.reduce((sum, row) => sum + row[key], 0) / results.length;
+                return { key, label, average };
+            }).sort((a, b) => a.average - b.average);
+
+            const largestDataset = results[results.length - 1];
+            const ranking = algorithmOrder.map(({ key, label }) => ({ label, value: largestDataset[key] }))
+                .sort((a, b) => a.value - b.value);
+            const fastest = ranking[0];
+            const slowest = ranking[ranking.length - 1];
+            const gap = slowest.value / Math.max(fastest.value, 0.001);
+
+            bestAlgorithmEl.textContent = totals[0].label;
+            largestGapEl.textContent = `${gap.toFixed(1)} 倍`;
+            trendSummaryEl.textContent = `${fastest.label} 在 n=${largestDataset.size} 最快`;
+        }
+
+        function drawChart(results) {
+            const width = chart.width;
+            const height = chart.height;
+            const padding = { top: 24, right: 24, bottom: 46, left: 58 };
+            const plotWidth = width - padding.left - padding.right;
+            const plotHeight = height - padding.top - padding.bottom;
+            const maxValue = Math.max(...results.flatMap((row) => algorithmOrder.map(({ key }) => row[key])), 1);
+
+            chartCtx.clearRect(0, 0, width, height);
+            chartCtx.fillStyle = "#fffaf2";
+            chartCtx.fillRect(0, 0, width, height);
+
+            chartCtx.strokeStyle = "rgba(95, 79, 57, 0.18)";
+            chartCtx.lineWidth = 1;
+            for (let i = 0; i <= 4; i++) {
+                const y = padding.top + (plotHeight / 4) * i;
+                chartCtx.beginPath();
+                chartCtx.moveTo(padding.left, y);
+                chartCtx.lineTo(width - padding.right, y);
+                chartCtx.stroke();
+
+                const labelValue = ((maxValue * (4 - i)) / 4).toFixed(1);
+                chartCtx.fillStyle = "#5b6472";
+                chartCtx.font = "12px sans-serif";
+                chartCtx.fillText(labelValue, 10, y + 4);
+            }
+
+            chartCtx.strokeStyle = "#86745f";
+            chartCtx.beginPath();
+            chartCtx.moveTo(padding.left, padding.top);
+            chartCtx.lineTo(padding.left, height - padding.bottom);
+            chartCtx.lineTo(width - padding.right, height - padding.bottom);
+            chartCtx.stroke();
+
+            algorithmOrder.forEach(({ key, label, color }, index) => {
+                chartCtx.beginPath();
+                chartCtx.strokeStyle = color;
+                chartCtx.lineWidth = 3;
+
+                results.forEach((row, pointIndex) => {
+                    const x = padding.left + (plotWidth / (results.length - 1)) * pointIndex;
+                    const y = padding.top + plotHeight - (row[key] / maxValue) * plotHeight;
+                    if (pointIndex === 0) {
+                        chartCtx.moveTo(x, y);
+                    } else {
+                        chartCtx.lineTo(x, y);
+                    }
+                });
+                chartCtx.stroke();
+
+                results.forEach((row, pointIndex) => {
+                    const x = padding.left + (plotWidth / (results.length - 1)) * pointIndex;
+                    const y = padding.top + plotHeight - (row[key] / maxValue) * plotHeight;
+                    chartCtx.fillStyle = color;
+                    chartCtx.beginPath();
+                    chartCtx.arc(x, y, 4, 0, Math.PI * 2);
+                    chartCtx.fill();
+                });
+
+                chartCtx.fillStyle = color;
+                chartCtx.fillRect(width - padding.right - 150, padding.top + index * 24, 14, 14);
+                chartCtx.fillStyle = "#1e2430";
+                chartCtx.font = "13px sans-serif";
+                chartCtx.fillText(label, width - padding.right - 128, padding.top + 12 + index * 24);
+            });
+
+            results.forEach((row, pointIndex) => {
+                const x = padding.left + (plotWidth / (results.length - 1)) * pointIndex;
+                chartCtx.fillStyle = "#5b6472";
+                chartCtx.font = "12px sans-serif";
+                chartCtx.fillText(row.size, x - 10, height - 18);
+            });
+        }
+
+        async function runBenchmarks() {
+            benchmarkButton.disabled = true;
+            statusEl.textContent = "正在執行實驗，請稍候...";
+            const results = [];
+
+            for (const size of datasetSizes) {
+                statusEl.textContent = `正在測試 n=${size}`;
+                const sample = generateRandomArray(size);
+                const row = { size };
+
+                algorithmOrder.forEach(({ key }) => {
+                    row[key] = benchmark(algorithms[key], sample);
+                });
+
+                results.push(row);
+                await new Promise((resolve) => requestAnimationFrame(resolve));
+            }
+
+            updateTable(results);
+            updateSummary(results);
+            drawChart(results);
+            statusEl.textContent = `實驗完成，共測試 ${datasetSizes.length} 組資料規模。`;
+            benchmarkButton.disabled = false;
+        }
+
+        benchmarkButton.addEventListener("click", runBenchmarks);
+        drawChart(datasetSizes.map((size) => ({
+            size,
+            bubble: 0,
+            selection: 0,
+            insertion: 0,
+            merge: 0,
+            quick: 0
+        })));
+    </script>
+</body>
+</html>
